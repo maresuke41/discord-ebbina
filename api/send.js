@@ -13,9 +13,10 @@ export default async function handler(req, res) {
     const webhookUrl = 'https://discord.com/api/webhooks/1428992499401232415/Y5ob_1IjzvJwNB4ssOCHJ3vlG7ZSUb8BvApaFDETlLlD0GN1dRo25-7uO_wV1FGOpgAf';
 
     const payload = {
-      content: `<@${userId}> ${message}`,
-      allowed_mentions: {
+        allowed_mentions: {
         users: [userId] // 🔥 これがないとメンションされない
+      content: `<@${userId}> ${message}`,
+    
       }
     };
 
