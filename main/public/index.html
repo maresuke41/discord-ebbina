@@ -5,11 +5,15 @@
   <title>Discord通知フォーム</title>
 </head>
 <body>
-  <h1>メンション付きで送信</h1>
+  <h1>Discord メンション通知</h1>
 
   <form id="form">
-    <input type="text" id="userid" placeholder="メンションするユーザーID" required /><br><br>
-    <input type="text" id="message" placeholder="メッセージ" required /><br><br>
+    <label>ユーザーID（メンション先）:</label><br />
+    <input type="text" id="userid" placeholder="例: 123456789012345678" required /><br /><br>
+
+    <label>メッセージ:</label><br />
+    <input type="text" id="message" placeholder="送信したい内容" required /><br /><br>
+
     <button type="submit">送信</button>
   </form>
 
@@ -21,23 +25,27 @@
       const message = document.getElementById('message').value.trim();
 
       if (!userId || !message) {
-        alert('両方入力してください');
+        alert('ユーザーIDとメッセージを入力してください');
         return;
       }
 
-      const res = await fetch('/api/send', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ userId, message }),
-      });
+      try {
+        const res = await fetch('/api/send', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ userId, message })
+        });
 
-      if (res.ok) {
-        alert('送信成功！');
-      } else {
-        const error = await res.json();
-        alert('送信失敗: ' + (error.details || error.error || '不明なエラー'));
+        if (res.ok) {
+          alert('送信成功！');
+        } else {
+          const error = await res.json();
+          alert('送信失敗: ' + (error.details || error.error));
+        }
+      } catch (err) {
+        alert('エラーが発生しました: ' + err.message);
       }
     });
   </script>
