@@ -38,11 +38,21 @@
           body: JSON.stringify({ userId, message })
         });
 
-        if (res.ok) {
-          alert('送信成功！');
-        } else {
-          const error = await res.json();
-          alert('送信失敗: ' + (error.details || error.error));
+   
+   if (res.ok) {
+  alert('送信成功！');
+} else {
+  let errorText = '送信失敗';
+  try {
+    const data = await res.json();
+    errorText += ': ' + (data.details || data.error || '不明なエラー');
+  } catch (e) {
+    const text = await res.text(); // ← JSONじゃなかった場合に備える！
+    errorText += ': ' + text;
+  }
+  alert(errorText);
+}
+
         }
       } catch (err) {
         alert('エラーが発生しました: ' + err.message);
