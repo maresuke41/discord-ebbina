@@ -10,7 +10,7 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'userId and message are required' });
     }
 
-    const webhookUrl = 'https://discord.com/api/webhooks/xxxxxxxxxxxx/yyyyyyyyyyyyyyyyyy'; // ← あなたのURL
+    const webhookUrl = 'https://discord.com/api/webhooks/1428992536894115900/ILE6g11bzss-6wVSmfvq5G2sCYDbugkNUwoDIn5ogMr352dX7zEBuNO_YYRwlYW1XF-w'; // ← あなたのURL
 
     const payload = {
       content: `<@${userId}> ${message}`,
