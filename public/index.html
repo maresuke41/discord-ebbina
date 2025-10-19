@@ -7,19 +7,21 @@
 <body>
   <h1>Discord メンション通知</h1>
 
+  <!-- ❌ action属性は書かない！ method="post" も不要 -->
   <form id="form">
-    <label>ユーザーID（メンション先）:</label><br />
-    <input type="text" id="userid" placeholder="例: 123456789012345678" required /><br /><br>
+    <label>ユーザーID:</label><br />
+    <input type="text" id="userid" required /><br /><br>
 
     <label>メッセージ:</label><br />
-    <input type="text" id="message" placeholder="送信したい内容" required /><br /><br>
+    <input type="text" id="message" required /><br /><br>
 
     <button type="submit">送信</button>
   </form>
 
+  <!-- ✅ scriptはHTMLの一番最後に配置（formが読み込まれた後） -->
   <script>
     document.getElementById('form').addEventListener('submit', async (e) => {
-      e.preventDefault();
+      e.preventDefault(); // ← これがないとGETになる！
 
       const userId = document.getElementById('userid').value.trim();
       const message = document.getElementById('message').value.trim();
@@ -29,33 +31,26 @@
         return;
       }
 
-      try {
-        const res = await fetch('/api/send', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ userId, message })
-        });
+      const res = await fetch('/api/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId, message })
+      });
 
-   
-   if (res.ok) {
-  alert('送信成功！');
-} else {
-  let errorText = '送信失敗';
-  try {
-    const data = await res.json();
-    errorText += ': ' + (data.details || data.error || '不明なエラー');
-  } catch (e) {
-    const text = await res.text(); // ← JSONじゃなかった場合に備える！
-    errorText += ': ' + text;
-  }
-  alert(errorText);
-}
-
+      if (res.ok) {
+        alert('送信成功！');
+      } else {
+        let errorText = '送信失敗';
+        try {
+          const data = await res.json();
+          errorText += ': ' + (data.details || data.error || '不明なエラー');
+        } catch (e) {
+          const text = await res.text();
+          errorText += ': ' + text;
         }
-      } catch (err) {
-        alert('エラーが発生しました: ' + err.message);
+        alert(errorText);
       }
     });
   </script>
