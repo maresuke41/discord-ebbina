@@ -19,40 +19,55 @@
   </form>
 
   <!-- ✅ scriptはHTMLの一番最後に配置（formが読み込まれた後） -->
-  <script>
-    document.getElementById('form').addEventListener('submit', async (e) => {
-      e.preventDefault(); // ← これがないとGETになる！
+ <script>
+  console.log("✅ JS読み込み確認用ログ");
 
-      const userId = document.getElementById('userid').value.trim();
-      const message = document.getElementById('message').value.trim();
+  const form = document.getElementById('form');
+  if (!form) {
+    console.error("❌ フォームが見つかりません！");
+  } else {
+    console.log("✅ フォーム取得成功");
+  }
 
-      if (!userId || !message) {
-        alert('ユーザーIDとメッセージを入力してください');
-        return;
-      }
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    console.log("🚀 フォーム送信イベント発火");
 
-      const res = await fetch('/api/send', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ userId, message })
-      });
+    const userId = document.getElementById('userid').value.trim();
+    const message = document.getElementById('message').value.trim();
+    console.log("📨 入力内容:", { userId, message });
 
-      if (res.ok) {
-        alert('送信成功！');
-      } else {
-        let errorText = '送信失敗';
-        try {
-          const data = await res.json();
-          errorText += ': ' + (data.details || data.error || '不明なエラー');
-        } catch (e) {
-          const text = await res.text();
-          errorText += ': ' + text;
-        }
-        alert(errorText);
-      }
+    if (!userId || !message) {
+      alert('ユーザーIDとメッセージを入力してください');
+      return;
+    }
+
+    console.log("📡 fetch開始");
+
+    const res = await fetch('/api/send', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ userId, message })
     });
-  </script>
-</body>
+
+    console.log("📬 fetch応答ステータス:", res.status);
+
+    if (res.ok) {
+      alert('送信成功！');
+    } else {
+      let errorText = '送信失敗';
+      try {
+        const data = await res.json();
+        errorText += ': ' + (data.details || data.error || '不明なエラー');
+      } catch (e) {
+        const text = await res.text();
+        errorText += ': ' + text;
+      }
+      alert(errorText);
+    }
+  });
+</script>
+</body> 
 </html>
