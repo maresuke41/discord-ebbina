@@ -57,14 +57,21 @@
     if (res.ok) {
       alert('送信成功！');
     } else {
-      let errorText = '送信失敗';
-      try {
-        const data = await res.json();
-        errorText += ': ' + (data.details || data.error || '不明なエラー');
-      } catch (e) {
-        const text = await res.text();
-        errorText += ': ' + text;
-      }
+  let errorText = '送信失敗';
+try {
+  const clone = res.clone(); // ← クローンを作る！
+  const data = await res.json();
+  errorText += ': ' + (data.details || data.error || '不明なエラー');
+} catch (e) {
+  try {
+    const text = await res.text();
+    errorText += ': ' + text;
+  } catch {
+    errorText += ': レスポンス読み取りエラー';
+  }
+}
+
+
       alert(errorText);
     }
   });
